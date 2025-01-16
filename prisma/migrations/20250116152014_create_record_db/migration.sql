@@ -1,0 +1,29 @@
+BEGIN TRY
+
+BEGIN TRAN;
+
+-- CreateTable
+CREATE TABLE [dbo].[Record] (
+    [id] INT NOT NULL IDENTITY(1,1),
+    [site] NVARCHAR(1000) NOT NULL CONSTRAINT [Record_site_df] DEFAULT 'CITY_HALL',
+    [location] VARCHAR(50) NOT NULL,
+    [owner] VARCHAR(50) NOT NULL,
+    [retention] SMALLINT NOT NULL,
+    [content] VARCHAR(max) NOT NULL,
+    [createdAt] DATETIME2 NOT NULL CONSTRAINT [Record_createdAt_df] DEFAULT CURRENT_TIMESTAMP,
+    [updatedAt] DATETIME2 NOT NULL,
+    CONSTRAINT [Record_pkey] PRIMARY KEY CLUSTERED ([id])
+);
+
+COMMIT TRAN;
+
+END TRY
+BEGIN CATCH
+
+IF @@TRANCOUNT > 0
+BEGIN
+    ROLLBACK TRAN;
+END;
+THROW
+
+END CATCH

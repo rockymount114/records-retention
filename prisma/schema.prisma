@@ -12,3 +12,14 @@ datasource db {
   provider = "sqlserver"
   url      = env("DATABASE_URL")
 }
+
+model Record {
+  id        Int      @id @default(autoincrement())
+  site      String   @default("CITY_HALL")
+  location  String   @db.VarChar(50)
+  owner     String   @db.VarChar(50)
+  retention Int      @db.SmallInt
+  content   String   @db.VarChar(max)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}

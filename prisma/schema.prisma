@@ -13,13 +13,68 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Record {
+model User {
   id        Int      @id @default(autoincrement())
-  site      String   @default("CITY_HALL")
-  location  String   @db.VarChar(50)
-  owner     String   @db.VarChar(50)
-  retention Int      @db.SmallInt
-  content   String   @db.VarChar(max)
+  firstname String   @db.VarChar(50)
+  lastname  String   @db.VarChar(50)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
+
+model Location {
+  id        Int      @id @default(autoincrement())
+  name      String   @db.VarChar(50)
+  records   Record[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Owner {
+  id        Int      @id @default(autoincrement())
+  firstname String   @db.VarChar(50)
+  lastname  String   @db.VarChar(50)
+  records   Record[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Box {
+  id        Int      @id @default(autoincrement())
+  boxNumber Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  Record    Record[]
+}
+
+model Record {
+  id   Int    @id @default(autoincrement())
+  site String @default("CITY HALL")
+
+  locationId  Int
+  location    Location  @relation(fields: [locationId], references: [id])
+  ownerId     Int
+  owner       Owner     @relation(fields: [ownerId], references: [id])
+  boxId       Int
+  box         Box       @relation(fields: [boxId], references: [id])
+  status      String    @default("ACTIVE")
+  disposition String    @default("ACTIVE")
+  retention   Int?      @db.SmallInt
+  content     String?   @db.Text
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  reviewDate  DateTime  @db.DateTime
+  deleteDate  DateTime? @db.DateTime
+}
+
+// enum Status {
+//   ACTIVE
+//   DELETED
+// }
+
+// enum Disposition {
+//   ACTIVE
+//   SCANNED
+//   TRANSFERRED
+//   DESTROYED
+//   REPOSSESSED
+// }

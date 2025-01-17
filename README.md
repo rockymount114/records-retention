@@ -6281,3 +6281,6 @@ return (
 ```
 
 ### 🚀🚀🚀 THE END 🚀🚀🚀
+
+### https://github.com/john-smilga/nextjs-course-home-away
+### https://github.com/mosh-hamedani/issue-tracker

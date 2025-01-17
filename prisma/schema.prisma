@@ -21,6 +21,11 @@ model User {
   updatedAt DateTime @updatedAt
 }
 
+model Site {
+  id Int @id @default(autoincrement())
+  name String @db.VarChar(50)
+}
+
 model Location {
   id        Int      @id @default(autoincrement())
   name      String   @db.VarChar(50)
@@ -49,7 +54,6 @@ model Box {
 model Record {
   id   Int    @id @default(autoincrement())
   site String @default("CITY HALL")
-
   locationId  Int
   location    Location  @relation(fields: [locationId], references: [id])
   ownerId     Int

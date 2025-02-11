@@ -8,7 +8,7 @@ import {
 import { LuAlignLeft } from 'react-icons/lu';
 import Link from 'next/link';
 import { Button } from '../ui/button';
-// import UserIcon from './UserIcon';
+import UserIcon from './UserIcon';
 import { links } from '@/utils/links';
 import SignOutLink from './SignOutLink';
 import { SignedOut, SignedIn, SignInButton, SignUpButton} from '@clerk/nextjs';
@@ -19,7 +19,7 @@ function LinksDropdown() {
       <DropdownMenuTrigger asChild>
         <Button variant='outline' className='flex gap-4 max-w-[100px]'>
           <LuAlignLeft className='w-6 h-6' />
-          {/* <UserIcon /> */}
+          <UserIcon />
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className='w-52' align='start' sideOffset={10}>

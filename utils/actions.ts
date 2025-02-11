@@ -2,18 +2,17 @@
 
 import { profileSchema } from "./schema";
 import db from "./db";
-import { clerkClient, currentUser} from '@clerk/nextjs/server';
+import { auth, clerkClient, currentUser} from '@clerk/nextjs/server';
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
 
-
-const getAuthUser = async() => {
-    const user = await currentUser()
-    if (!user) throw new Error('User not found')
-    if (!user.privateMetadata?.hasProfile) redirect('/profile/create')
-    return user;
-}
+// const getAuthUser = async() => {
+//     const user = await currentUser()
+//     if (!user) throw new Error('User not found')
+//     if (!user.privateMetadata?.hasProfile) redirect('/profile/create')
+//     return user;
+// }
 
 const renderError = (error:unknown):{message:string} => {
 
@@ -37,8 +36,8 @@ export const createProfileAction = async (prevState: any, formData: FormData) =>
                 ... validatedFields,
 
             }
-        })      
-        await clerkClient.users.updateUserMetadata(user.id, {
+        }) ;     
+        (await clerkClient()).users.updateUserMetadata(user.id, {
             privateMetadata: {
                 hasProfile: true
             },
@@ -56,55 +55,55 @@ export const createProfileAction = async (prevState: any, formData: FormData) =>
 
 
 
-export const fethchProfileImage = async () => {
-    const user = await currentUser()
-    if (!user) return null;
+// export const fethchProfileImage = async () => {
+//     const user = await currentUser()
+//     if (!user) return null;
 
-    const profile = await db.profile.findUnique({
-        where: {
-            clerkId: user.id
-        },
-        select: {
-            profileImage: true
-        }
-    })
-    return profile?.profileImage;
-  }
+//     const profile = await db.profile.findUnique({
+//         where: {
+//             clerkId: user.id
+//         },
+//         select: {
+//             profileImage: true
+//         }
+//     })
+//     return profile?.profileImage;
+//   }
 
-export const fetchProfile = async () => {
-    const user = await getAuthUser()
-    const profile = await db.profile.findUnique({
-        where: {
-            clerkId: user.id
-        }
-    })
-    console.log("clerkId")
-    if (!profile) redirect('/profile/create')
-    return profile;
-  }
+// export const fetchProfile = async () => {
+//     const user = await getAuthUser()
+//     const profile = await db.profile.findUnique({
+//         where: {
+//             clerkId: user.id
+//         }
+//     })
+//     console.log("clerkId")
+//     if (!profile) redirect('/profile/create')
+//     return profile;
+//   }
 
 
-// 81
-export const updateProfileAction = async (
-    prevState: any, 
-    formData: FormData) => {
-    const user = await getAuthUser()
+// // 81
+// export const updateProfileAction = async (
+//     prevState: any, 
+//     formData: FormData) => {
+//     const user = await getAuthUser()
     
-    try {
-        const rawData = Object.fromEntries(formData);
-        const validatedFields = profileSchema.parse(rawData);
+//     try {
+//         const rawData = Object.fromEntries(formData);
+//         const validatedFields = profileSchema.parse(rawData);
 
-        await db.profile.update({
-            where: {
-                clerkId: user.id
-            },
-            data: {
-                ...validatedFields
-            }
-        })
-    }
-    catch (error) {
-        return renderError(error) 
-    }
-    return { message: 'Profile updated successfully'}
-}
+//         await db.profile.update({
+//             where: {
+//                 clerkId: user.id
+//             },
+//             data: {
+//                 ...validatedFields
+//             }
+//         })
+//     }
+//     catch (error) {
+//         return renderError(error) 
+//     }
+//     return { message: 'Profile updated successfully'}
+// }

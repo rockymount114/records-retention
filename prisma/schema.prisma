@@ -13,34 +13,54 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model Profile {
+  id           String   @id @default(uuid())
+  clerkId      String   @unique
+  firstName    String
+  lastName     String
+  username     String
+  email        String
+  profileImage String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  // Box Property[]
+  // favorites Favorite[]
+  //   reviews Review[]
+  // bookings Booking[]
+}
+
 model User {
   id        Int      @id @default(autoincrement())
   firstname String   @db.VarChar(50)
   lastname  String   @db.VarChar(50)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  // Record    Record[]
+  Record    Record[]
 }
 
 model Site {
-  id Int @id @default(autoincrement())
+  id   Int    @id @default(autoincrement())
   name String @db.VarChar(50)
 }
 
 model Location {
   id        Int      @id @default(autoincrement())
   name      String   @db.VarChar(50)
-  records   Record[]
+  // records   Record[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  Record    Record[]
 }
 
 model Owner {
   id        Int      @id @default(autoincrement())
   firstname String   @db.VarChar(50)
   lastname  String   @db.VarChar(50)
-  records   Record[]
+  // records   Record[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  Record    Record[]
 }
 
 model Box {
@@ -48,12 +68,15 @@ model Box {
   boxNumber Int
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  // Record    Record[]
   Record    Record[]
 }
 
 model Record {
-  id   Int    @id @default(autoincrement())
-  site String @default("CITY HALL")
+  id          Int       @id @default(autoincrement())
+  site        String    @default("CITY HALL")
+  userId      Int
+  user        User      @relation(fields: [userId], references: [id])
   locationId  Int
   location    Location  @relation(fields: [locationId], references: [id])
   ownerId     Int

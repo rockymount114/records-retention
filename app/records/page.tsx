@@ -7,9 +7,7 @@ import Link from 'next/link';
 const Records = () => {
   return (
     <div>
-      <Button>
-        <Link href="/records/new">New Record</Link>
-      </Button>
+      <h1>All records here</h1>
       
       </div>
   )

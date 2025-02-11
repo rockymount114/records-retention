@@ -1,6 +1,6 @@
 'use server'
 
-import { profileSchema } from "./schema";
+import { profileSchema, validateWithZodSchema } from "./schema";
 import db from "./db";
 import { auth, clerkClient, currentUser} from '@clerk/nextjs/server';
 import { revalidatePath } from "next/cache";
@@ -27,7 +27,7 @@ export const createProfileAction = async (prevState: any, formData: FormData) =>
         if (!user) throw new Error('User not found')        
 
         const rawData = Object.fromEntries(formData)
-        const validatedFields = profileSchema.parse(rawData)
+        const validatedFields = validateWithZodSchema(profileSchema, rawData);
         await db.profile.create({
             data: {
                 clerkId: user?.id,
@@ -68,7 +68,7 @@ export const fethchProfileImage = async () => {
         }
     })
     return profile?.profileImage;
-  }
+  };
 
 export const fetchProfile = async () => {
     const user = await getAuthUser()
@@ -77,21 +77,18 @@ export const fetchProfile = async () => {
             clerkId: user.id
         }
     })
-    // console.log("clerkId")
+
     if (!profile) redirect('/profile/create')
     return profile;
-  }
+  };
 
 
 // // 81
-export const updateProfileAction = async (
-    prevState: any, 
-    formData: FormData) => {
-    const user = await getAuthUser()
-    
+export const updateProfileAction = async (prevState: any, formData: FormData) => {
+    const user = await getAuthUser()    
     try {
         const rawData = Object.fromEntries(formData);
-        const validatedFields = profileSchema.parse(rawData);
+        const validatedFields = validateWithZodSchema(profileSchema, rawData);
 
         await db.profile.update({
             where: {
@@ -106,4 +103,12 @@ export const updateProfileAction = async (
         return renderError(error) 
     }
     return { message: 'Profile updated successfully'}
-}
+};
+
+
+export const updateProfileImageAction = async (
+    prevState: any,
+    formData: FormData
+  ): Promise<{ message: string }> => {
+    return { message: 'Profile image updated successfully' };
+  };

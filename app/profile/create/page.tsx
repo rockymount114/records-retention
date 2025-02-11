@@ -6,37 +6,12 @@ import { redirect } from 'next/navigation';
 import { currentUser } from '@clerk/nextjs/server';
 
 // 70, 6.01
-
-// async function CreateProfilePage() {
-//   const user = await currentUser()
-//   if (!user?.privateMetadata?.hasProfile) {
-//     redirect('/')
-//   }
-//   const CreateProfilePageAction = createProfileAction.bind(null, user.id);
-//   return (
-//     <section>
-//       <h1 className='text-2xl font-semibold mb-8 capitalize'>new user</h1>
-//       <div className='border p-8 rounded-md max-w-lg'>
-//         <FormContainer action={CreateProfilePageAction}>
-//           <div className='grid gap-4 mt-4 '>
-//             <FormInput type='text' name='firstName' label='First Name' />
-//             <FormInput type='text' name='lastName' label='Last Name' />
-//             <FormInput type='text' name='username' label='Username' />
-//           </div>
-//           <SubmitButton text='Create Profile' className='mt-8' />
-//         </FormContainer>
-//       </div>
-//     </section>
-//   );
-// }
-
-
 async function CreateProfilePage (){
 
-  // const user = await currentUser()
-  // if (!user?.privateMetadata?.hasProfile) {
-  //   redirect('/')
-  // }
+  const user = await currentUser()
+  if (!user?.privateMetadata?.hasProfile) {
+    redirect('/')
+  }
   
   return(
     <section>

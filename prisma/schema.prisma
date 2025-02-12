@@ -23,10 +23,8 @@ model Profile {
   profileImage String
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
-  // Box Property[]
-  // favorites Favorite[]
-  //   reviews Review[]
-  // bookings Booking[]
+  records      Record[]
+
 }
 
 model User {
@@ -35,7 +33,6 @@ model User {
   lastname  String   @db.VarChar(50)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  // Record    Record[]
   Record    Record[]
 }
 
@@ -47,7 +44,6 @@ model Site {
 model Location {
   id        Int      @id @default(autoincrement())
   name      String   @db.VarChar(50)
-  // records   Record[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   Record    Record[]
@@ -91,6 +87,8 @@ model Record {
   updatedAt   DateTime  @updatedAt
   reviewDate  DateTime  @db.DateTime
   deleteDate  DateTime? @db.DateTime
+  profile     Profile   @relation(fields: [profileId], references: [clerkId], onDelete: Cascade)
+  profileId String
 }
 
 // enum Status {

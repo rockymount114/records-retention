@@ -41,3 +41,38 @@ function validateFile() {
       );
     }, 'File must be an image');
 }
+
+
+
+
+export const recordSchema = z.object({
+  site: z
+    .string()
+    .min(2, {
+      message: 'site must be at least 2 characters.',
+    })
+    .max(100, {
+      message: 'site must be less than 100 characters.',
+    }),
+    disposition: z
+    .string()
+    .min(2, {
+      message: 'disposition must be at least 2 characters.',
+    })
+    .max(100, {
+      message: 'disposition must be less than 100 characters.',
+    }),  
+  retention: z.coerce.number().int().min(0, {
+    message: 'retention must be a positive number.',
+  }),
+  content: z.string().refine(
+    (content) => {
+      const wordCount = content.split(' ').length;
+      return wordCount >= 10 && wordCount <= 1000;
+    },
+    {
+      message: 'content must be between 10 and 1000 words.',
+    }
+  ),
+  
+});

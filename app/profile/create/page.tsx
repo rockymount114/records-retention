@@ -9,6 +9,7 @@ import { currentUser } from '@clerk/nextjs/server';
 async function CreateProfilePage (){
 
   const user = await currentUser()
+  console.log(user)
   if (!user?.privateMetadata?.hasProfile) {
     redirect('/')
   }

@@ -7,12 +7,13 @@ import OwnersInput from '@/components/form/OwnerInput';
 import StatusInput from '@/components/form/StatusInput';
 import ContentInput from '@/components/form/ContentInput';
 import DispositionInput from '@/components/form/DispositionInput';
+import RetentionInput from '@/components/form/RetentionInput';
 
 async function CreateRecordPage() {
 
     return (<section>
 
-        <h1 className='text-2xl font-semibold mb-8 capitalize'>Create a record page</h1>
+        <h1 className='text-2xl font-semibold mb-8 capitalize'>Create a record</h1>
         <div className='border p-8 rounded-md'>
           <h3 className='text-lg mb-4 font-medium'>General Info</h3>
 
@@ -26,6 +27,12 @@ async function CreateRecordPage() {
               defaultValue='City Hall'
             />
             <FormInput
+              name='box'
+              type='text'
+              label='Box'
+              defaultValue=''
+            />
+            <FormInput
               name='location'
               type='text'
               label='Location (Row/Rack/Shelf/Space)'
@@ -37,6 +44,7 @@ async function CreateRecordPage() {
             <DispositionInput/>
 
             <StatusInput/>
+            <RetentionInput/>
             <ContentInput name='content' label='Content'/>
 
             </div>

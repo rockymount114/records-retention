@@ -146,9 +146,51 @@ export const updateProfileImageAction = async (
     try {
       const rawData = Object.fromEntries(formData);
       const validatedFields = validateWithZodSchema(recordSchema, rawData);
-      return {message: 'Record created successfully'}
+  
+      // Calculate reviewDate based on retention period
+      const today = new Date();
+      const retentionYears = validatedFields.retention ? parseInt(validatedFields.retention.toString(), 10) : 0;
+      const reviewDate = new Date(today.getFullYear() + retentionYears, today.getMonth(), today.getDate());
+  
+      // Check if owner ID is valid
+      const ownerId = parseInt(validatedFields.owner, 10);
+      if (isNaN(ownerId)) {
+        throw new Error('Invalid owner ID');
+      }
+  
+      // Get the profile for the current user
+      const profile = await db.profile.findUnique({
+        where: { clerkId: user.id }
+      });
+      
+      if (!profile) {
+        throw new Error('Profile not found');
+      }
+  
+      // Create the record with proper relations but without User model
+      await db.record.create({
+        data: {
+          site: validatedFields.site,
+          userId: 1, // Keeping this as required by schema, but can be a default value
+          locationId: parseInt(validatedFields.location, 10),
+          ownerId: ownerId,
+          boxId: parseInt(validatedFields.box, 10),
+          status: "ACTIVE",
+          disposition: validatedFields.disposition,
+          retention: retentionYears,
+          content: validatedFields.content,
+          reviewDate: reviewDate,
+          deleteDate: retentionYears 
+            ? new Date(Date.now() + retentionYears * 365 * 24 * 60 * 60 * 1000)
+            : null,
+          profileId: user.id // Using the clerk ID as profile ID
+        }
+      });
+  
+      revalidatePath('/records');
+      return { message: 'Record created successfully' };
     } catch (error) {
+      console.error("Error creating record:", error);
       return renderError(error);
     }
-    redirect('/');
   };

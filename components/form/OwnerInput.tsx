@@ -1,5 +1,7 @@
+'use client';
+
+import { useEffect, useState } from 'react';
 import { Label } from '@/components/ui/label';
-import { owners } from '@/utils/owners';
 import {
   Select,
   SelectContent,
@@ -9,18 +11,42 @@ import {
 } from '@/components/ui/select';
 
 const name = 'owner';
+
+interface Owner {
+  id: number;
+  ownername: string;
+  ownerlong: string;
+}
+
 function OwnersInput({ defaultValue }: { defaultValue?: string }) {
-    const renderIcon = (IconComponent: React.ComponentType) => {
-        if (!IconComponent) return null;
-        return <IconComponent />;
-      };
+  const [owners, setOwners] = useState<Owner[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchOwners = async () => {
+      try {
+        const response = await fetch('/api/owners');
+        const data = await response.json();
+        setOwners(data);
+      } catch (error) {
+        console.error('Error fetching owners:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchOwners();
+  }, []);
+
+  if (loading) return <p>Loading owners...</p>;
+
   return (
-    <div className='mb-2'>
-      <Label htmlFor={name} className='capitalize'>
+    <div className="mb-2">
+      <Label htmlFor={name} className="capitalize">
         {name}
       </Label>
       <Select
-        defaultValue={defaultValue || owners[0].label}
+        defaultValue={defaultValue || owners[0]?.ownerlong}
         name={name}
         required
       >
@@ -28,19 +54,15 @@ function OwnersInput({ defaultValue }: { defaultValue?: string }) {
           <SelectValue />
         </SelectTrigger>
         <SelectContent>
-          {owners.map((item) => {
-            return (
-              <SelectItem key={item.label} value={item.label}>
-                <span className='flex items-center gap-2'>
-                {renderIcon(item.icon)}
-                {item.label}
-                </span>
-              </SelectItem>
-            );
-          })}
+          {owners.map((owner) => (
+            <SelectItem key={owner.id} value={owner.ownerlong}>
+              {owner.ownerlong}
+            </SelectItem>
+          ))}
         </SelectContent>
       </Select>
     </div>
   );
 }
+
 export default OwnersInput;

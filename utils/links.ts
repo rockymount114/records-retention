@@ -9,4 +9,5 @@ type NavLink = {
     { href: '/records/create ', label: 'create record' },
     { href: '/records', label: 'my records' },
     { href: '/profile ', label: 'profile' },
+    { href: '/admin ', label: 'admin' },
   ];

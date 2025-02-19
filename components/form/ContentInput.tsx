@@ -1,5 +1,5 @@
 import { Label } from '@/components/ui/label';
-import { Textare, Textarea } from '@/components/ui/textarea';
+import { Textarea } from '@/components/ui/textarea';
 
 type ContentInputProps = {
     name: string;

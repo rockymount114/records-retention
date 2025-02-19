@@ -62,17 +62,35 @@ export const recordSchema = z.object({
     .max(100, {
       message: 'disposition must be less than 100 characters.',
     }),  
+
+    location: z
+    .string()
+    .min(1, {
+      message: 'location must be at least 1 characters.',
+    }),
+    owner: z
+    .string()
+    .min(1, {
+      message: 'owner must be at least 1 characters.',
+    }),
+    box: z
+    .string()
+    .min(1, {
+      message: 'box must be at least 1 characters.',
+    }),
   retention: z.coerce.number().int().min(0, {
     message: 'retention must be a positive number.',
   }),
   content: z.string().refine(
     (content) => {
       const wordCount = content.split(' ').length;
-      return wordCount >= 10 && wordCount <= 1000;
+      return wordCount >= 1 && wordCount <= 1000;
     },
     {
-      message: 'content must be between 10 and 1000 words.',
+      message: 'content must be between 1 and 1000 words.',
     }
   ),
+
+
   
 });

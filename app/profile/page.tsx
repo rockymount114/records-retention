@@ -11,7 +11,7 @@ async function ProfilePage() {
   return (
     // <h1>here is the profile page</h1>
     <section>
-      <h1 className='text-2xl font-semibold mb-8 capitalize'>user profile</h1>
+      <h1 className='text-base font-semibold mb-8 capitalize'>user profile</h1>
       <div className='border p-8 rounded-md'>
 
       <ImageInputContainer 

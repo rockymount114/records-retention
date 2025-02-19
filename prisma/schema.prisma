@@ -24,17 +24,22 @@ model Profile {
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
   records      Record[]
-
 }
 
-model User {
-  id        Int      @id @default(autoincrement())
-  firstname String   @db.VarChar(50)
-  lastname  String   @db.VarChar(50)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  Record    Record[]
-}
+// model User {
+//   id        Int      @id @default(autoincrement())
+//   userName  String @db.VarChar(50)
+//   accessType  String @db.VarChar(50)
+//   site  String @db.VarChar(50)
+//   organization String @db.VarChar(100)
+//   email String @db.VarChar(50)
+//   userContact String @db.VarChar(50)
+//   firstname String   @db.VarChar(50)
+//   lastname  String   @db.VarChar(50)
+//   createdAt DateTime @default(now())
+//   updatedAt DateTime @updatedAt
+//   Record    Record[]
+// }
 
 model Site {
   id   Int    @id @default(autoincrement())
@@ -51,12 +56,13 @@ model Location {
 
 model Owner {
   id        Int      @id @default(autoincrement())
-  firstname String   @db.VarChar(50)
-  lastname  String   @db.VarChar(50)
-  // records   Record[]
+  ownername String   @db.VarChar(25)
+  ownerlong  String  @db.VarChar(50)
+  status    String   @db.VarChar(10)
+  contact   String   @db.VarChar(50)
+  Record    Record[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  Record    Record[]
 }
 
 model Box {
@@ -72,7 +78,7 @@ model Record {
   id          Int       @id @default(autoincrement())
   site        String    @default("CITY HALL")
   userId      Int
-  user        User      @relation(fields: [userId], references: [id])
+  // user        User      @relation(fields: [userId], references: [id])
   locationId  Int
   location    Location  @relation(fields: [locationId], references: [id])
   ownerId     Int
@@ -88,7 +94,17 @@ model Record {
   reviewDate  DateTime  @db.DateTime
   deleteDate  DateTime? @db.DateTime
   profile     Profile   @relation(fields: [profileId], references: [clerkId], onDelete: Cascade)
-  profileId String
+  profileId   String
+}
+
+
+model Preference {
+  id          Int       @id @default(autoincrement())
+  itemValue   Int
+  itemDefault Int
+  itemType    String  @db.VarChar(20)
+  authLevel   String  @db.VarChar(20)
+
 }
 
 // enum Status {

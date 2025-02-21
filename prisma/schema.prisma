@@ -77,7 +77,7 @@ model Box {
 model Record {
   id          Int       @id @default(autoincrement())
   site        String    @default("CITY HALL")
-  userId      Int
+  // userId      Int
   locationId  Int
   location    Location  @relation(fields: [locationId], references: [id])
   ownerId     Int

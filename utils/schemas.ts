@@ -9,27 +9,27 @@ export const profileSchema = z.object({
 });
 
 
-// export function validateWithZodSchema<T>(
-//   schema: ZodSchema<T>,
-//   data: unknown
-// ): T {
-//   const result = schema.safeParse(data);
-//   if (!result.success) {
-//     const errors = result.error.errors.map((error) => error.message);
-
-//     throw new Error(errors.join(', '));
-//   }
-//   return result.data;
-// }
-
-
-export const validateWithZodSchema = (schema, data) => {
+export function validateWithZodSchema<T>(
+  schema: ZodSchema<T>,
+  data: unknown
+): T {
   const result = schema.safeParse(data);
   if (!result.success) {
-    throw new Error(result.error.errors[0].message || 'Validation failed');
+    const errors = result.error.errors.map((error) => error.message);
+
+    throw new Error(errors.join(', '));
   }
   return result.data;
-};
+}
+
+
+// export const validateWithZodSchema = (schema, data) => {
+//   const result = schema.safeParse(data);
+//   if (!result.success) {
+//     throw new Error(result.error.errors[0].message || 'Validation failed');
+//   }
+//   return result.data;
+// };
 
 
 export const imageSchema = z.object({

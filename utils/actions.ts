@@ -8,6 +8,7 @@ import { redirect } from "next/navigation";
 import { imageSchema, recordSchema } from "./schemas";
 import { uploadImage } from "./supabase";
 
+
 const getAuthUser = async() => {
     const user = await currentUser()
     if (!user) throw new Error('User not found')
@@ -137,6 +138,7 @@ export const updateProfileImageAction = async (
   };
 
 
+// Create record
   export const createRecordAction = async (
     prevState: any,
     formData: FormData
@@ -151,7 +153,7 @@ export const updateProfileImageAction = async (
     try {
       // Convert form data to an object
       const rawData = Object.fromEntries(formData.entries());
-      console.log('Raw Form Data:', rawData);
+      // console.log('Raw Form Data:', rawData);
   
       // Validate input using Zod
       const validatedFields = validateWithZodSchema(recordSchema, rawData);
@@ -177,7 +179,7 @@ export const updateProfileImageAction = async (
       if (!profile || !profile.clerkId) {
         throw new Error('Profile not found or clerkId is missing');
       }
-      console.log('Profile:', profile);
+      // console.log('Profile:', profile);
   
       // Convert string IDs to numbers for Prisma
       const boxId = parseInt(validatedFields.boxId, 10);
@@ -190,7 +192,7 @@ export const updateProfileImageAction = async (
         boxId: boxId,
         locationId: locationId,
         ownerId: ownerId,
-        userId: 1, // Add default userId as required by schema
+        // userId: 1, // Add default userId as required by schema
         disposition: validatedFields.disposition,
         status: validatedFields.status,
         retention: retentionYears, // Ensure this is a number

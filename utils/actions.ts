@@ -137,60 +137,79 @@ export const updateProfileImageAction = async (
   };
 
 
-
   export const createRecordAction = async (
     prevState: any,
     formData: FormData
   ): Promise<{ message: string }> => {
-    const user = await getAuthUser();
+    let user;
     try {
-      const rawData = Object.fromEntries(formData);
+      user = await getAuthUser();
+    } catch (error) {
+      return { message: 'Authentication failed' };
+    }
+  
+    try {
+      // Convert form data to an object
+      const rawData = Object.fromEntries(formData.entries());
+      console.log('Raw Form Data:', rawData);
+  
+      // Validate input using Zod
       const validatedFields = validateWithZodSchema(recordSchema, rawData);
+      console.log('Validated Fields:', validatedFields);
   
-      // Calculate reviewDate based on retention period
+      // Generate review and delete dates based on retention
       const today = new Date();
-      const retentionYears = validatedFields.retention ? parseInt(validatedFields.retention.toString(), 10) : 0;
-      const reviewDate = new Date(today.getFullYear() + retentionYears, today.getMonth(), today.getDate());
+      const retentionYears = validatedFields.retention || 0;
+      const reviewDate = new Date(
+        today.getFullYear() + Number(retentionYears),
+        today.getMonth(),
+        today.getDate()
+      );
+      const deleteDate = retentionYears
+        ? new Date(Date.now() + Number(retentionYears) * 365 * 24 * 60 * 60 * 1000)
+        : null;
   
-      // Check if owner ID is valid
-      const ownerId = parseInt(validatedFields.owner, 10);
-      if (isNaN(ownerId)) {
-        throw new Error('Invalid owner ID');
-      }
-  
-      // Get the profile for the current user
+      // Fetch user profile
       const profile = await db.profile.findUnique({
-        where: { clerkId: user.id }
+        where: { clerkId: user.id },
       });
-      
-      if (!profile) {
-        throw new Error('Profile not found');
+  
+      if (!profile || !profile.clerkId) {
+        throw new Error('Profile not found or clerkId is missing');
       }
+      console.log('Profile:', profile);
   
-      // Create the record with proper relations but without User model
-      await db.record.create({
-        data: {
-          site: validatedFields.site,
-          userId: 1, // Keeping this as required by schema, but can be a default value
-          locationId: parseInt(validatedFields.location, 10),
-          ownerId: ownerId,
-          boxId: parseInt(validatedFields.box, 10),
-          status: "ACTIVE",
-          disposition: validatedFields.disposition,
-          retention: retentionYears,
-          content: validatedFields.content,
-          reviewDate: reviewDate,
-          deleteDate: retentionYears 
-            ? new Date(Date.now() + retentionYears * 365 * 24 * 60 * 60 * 1000)
-            : null,
-          profileId: user.id // Using the clerk ID as profile ID
-        }
-      });
+      // Convert string IDs to numbers for Prisma
+      const boxId = parseInt(validatedFields.boxId, 10);
+      const locationId = parseInt(validatedFields.locationId, 10);
+      const ownerId = parseInt(validatedFields.ownerId, 10);
   
+      // Prepare data for Prisma
+      const data = {
+        site: validatedFields.siteId, // Using string directly as per schema
+        boxId: boxId,
+        locationId: locationId,
+        ownerId: ownerId,
+        userId: 1, // Add default userId as required by schema
+        disposition: validatedFields.disposition,
+        status: validatedFields.status,
+        retention: retentionYears, // Ensure this is a number
+        content: validatedFields.content || null,
+        reviewDate,
+        deleteDate,
+        profileId: profile.clerkId, // Use clerkId not id
+      };
+      console.log('Data to Prisma:', data);
+  
+      // Insert record into the database
+      const record = await db.record.create({ data });
+      console.log('Created record:', record);
+  
+      // Revalidate the cache for /records page
       revalidatePath('/records');
       return { message: 'Record created successfully' };
     } catch (error) {
-      console.error("Error creating record:", error);
-      return renderError(error);
+      console.error('Error creating record:', error);
+      return { message: `Failed to create record: ${error.message}` };
     }
   };

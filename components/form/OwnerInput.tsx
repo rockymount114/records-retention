@@ -10,7 +10,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 
-const name = 'owner';
+const name = 'ownerId'; // Change name to "ownerId" to match database field
 
 interface Owner {
   id: number;
@@ -43,11 +43,11 @@ function OwnersInput({ defaultValue }: { defaultValue?: string }) {
   return (
     <div className="mb-2">
       <Label htmlFor={name} className="capitalize">
-        {name}
+        Owner
       </Label>
       <Select
-        defaultValue={defaultValue || owners[0]?.ownerlong}
-        name={name}
+        defaultValue={defaultValue || owners[0]?.id.toString()} // Use id as default
+        name={name} // Use "ownerId" as the form field name
         required
       >
         <SelectTrigger id={name}>
@@ -55,8 +55,8 @@ function OwnersInput({ defaultValue }: { defaultValue?: string }) {
         </SelectTrigger>
         <SelectContent>
           {owners.map((owner) => (
-            <SelectItem key={owner.id} value={owner.ownerlong}>
-              {owner.ownerlong}
+            <SelectItem key={owner.id} value={owner.id.toString()}>
+              {owner.ownerlong} {/* Display ownerlong, submit id */}
             </SelectItem>
           ))}
         </SelectContent>

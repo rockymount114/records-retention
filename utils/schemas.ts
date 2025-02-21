@@ -9,18 +9,27 @@ export const profileSchema = z.object({
 });
 
 
-export function validateWithZodSchema<T>(
-  schema: ZodSchema<T>,
-  data: unknown
-): T {
+// export function validateWithZodSchema<T>(
+//   schema: ZodSchema<T>,
+//   data: unknown
+// ): T {
+//   const result = schema.safeParse(data);
+//   if (!result.success) {
+//     const errors = result.error.errors.map((error) => error.message);
+
+//     throw new Error(errors.join(', '));
+//   }
+//   return result.data;
+// }
+
+
+export const validateWithZodSchema = (schema, data) => {
   const result = schema.safeParse(data);
   if (!result.success) {
-    const errors = result.error.errors.map((error) => error.message);
-
-    throw new Error(errors.join(', '));
+    throw new Error(result.error.errors[0].message || 'Validation failed');
   }
   return result.data;
-}
+};
 
 
 export const imageSchema = z.object({
@@ -46,51 +55,12 @@ function validateFile() {
 
 
 export const recordSchema = z.object({
-  site: z
-    .string()
-    .min(2, {
-      message: 'site must be at least 2 characters.',
-    })
-    .max(100, {
-      message: 'site must be less than 100 characters.',
-    }),
-    disposition: z
-    .string()
-    .min(2, {
-      message: 'disposition must be at least 2 characters.',
-    })
-    .max(100, {
-      message: 'disposition must be less than 100 characters.',
-    }),  
-
-    location: z
-    .string()
-    .min(1, {
-      message: 'location must be at least 1 characters.',
-    }),
-    owner: z
-    .string()
-    .min(1, {
-      message: 'owner must be at least 1 characters.',
-    }),
-    box: z
-    .string()
-    .min(1, {
-      message: 'box must be at least 1 characters.',
-    }),
-  retention: z.coerce.number().int().min(0, {
-    message: 'retention must be a positive number.',
-  }),
-  content: z.string().refine(
-    (content) => {
-      const wordCount = content.split(' ').length;
-      return wordCount >= 1 && wordCount <= 1000;
-    },
-    {
-      message: 'content must be between 1 and 1000 words.',
-    }
-  ),
-
-
-  
+  siteId: z.string().min(1, 'Site is required'),
+  boxId: z.string().min(1, 'Box is required').regex(/^\d+$/, 'Box must be a number'),
+  locationId: z.string().min(1, 'Location is required').regex(/^\d+$/, 'Location must be a number'),
+  ownerId: z.string().min(1, 'Owner is required').regex(/^\d+$/, 'Owner ID must be a number'),
+  disposition: z.string().min(1, 'Disposition is required').default('ACTIVE'),
+  status: z.string().min(1, 'Status is required').default('ACTIVE'),
+  retention: z.string().transform(val => val ? parseInt(val, 10) : 0),
+  content: z.string().optional(),
 });

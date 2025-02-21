@@ -2,6 +2,13 @@
 
 export default function HomePage() {
   return (
-    <div>Rcoky Mount Records Retention Home page</div>
+    <section>
+      <div >
+        <h1>Home</h1>
+        <p>
+          Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam
+        </p>
+      </div>
+    </section>
   );
 }

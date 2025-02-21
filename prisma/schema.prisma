@@ -78,7 +78,6 @@ model Record {
   id          Int       @id @default(autoincrement())
   site        String    @default("CITY HALL")
   userId      Int
-  // user        User      @relation(fields: [userId], references: [id])
   locationId  Int
   location    Location  @relation(fields: [locationId], references: [id])
   ownerId     Int
@@ -87,7 +86,7 @@ model Record {
   box         Box       @relation(fields: [boxId], references: [id])
   status      String    @default("ACTIVE")
   disposition String    @default("ACTIVE")
-  retention   Int?      @db.SmallInt
+  retention   Int      @db.SmallInt
   content     String?   @db.Text
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt

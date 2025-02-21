@@ -1,4 +1,4 @@
-import FormInput from '@/components/form/FormInput';
+// import FormInput from '@/components/form/FormInput';
 import FormContainer from '@/components/form/FormContainer';
 import { createRecordAction } from '@/utils/actions';
 import { SubmitButton } from '@/components/form/Buttons';
@@ -8,12 +8,12 @@ import ContentInput from '@/components/form/ContentInput';
 import DispositionInput from '@/components/form/DispositionInput';
 import RetentionInput from '@/components/form/RetentionInput';
 
+import BoxInput from '@/components/form/BoxInput';
+import LocationInput from '@/components/form/LocationInput';
+import SiteInput from '@/components/form/SiteInput';
 
-import prisma from '@/prisma/client';
 
-async function fetchOwners() {
-  return await prisma.owner.findMany();
-}
+
 
 async function CreateRecordPage() {
 
@@ -26,27 +26,17 @@ async function CreateRecordPage() {
           <FormContainer action={createRecordAction}>
 
             <div className="grid md:grid-cols-2 gap-8 mb-4">
-            <FormInput
-              name='site'
-              type='text'
-              label='Site'
-              defaultValue='City Hall'
-            />
-            <FormInput
+            <SiteInput/>
+
+            {/* <FormInput
               name='box'
               type='text'
               label='Box'
               defaultValue=''
-            />
-            <FormInput
-              name='location'
-              type='text'
-              label='Location (Row/Rack/Shelf/Space)'
-              defaultValue=''
-            />
+            /> */}
 
-            {/* <LocationInput/> */}
-            {/* <OwnersInput/> */}
+            <BoxInput/>
+            <LocationInput/>
 
             <OwnersInput/>
 

@@ -67,10 +67,9 @@ model Owner {
 
 model Box {
   id        Int      @id @default(autoincrement())
-  boxNumber Int
+  boxNumber Int       @unique
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  // Record    Record[]
   Record    Record[]
 }
 

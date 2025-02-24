@@ -153,7 +153,9 @@ export const updateProfileImageAction = async (
     try {
       // Convert form data to an object
       const rawData = Object.fromEntries(formData.entries());
-      // console.log('Raw Form Data:', rawData);
+      console.log('Raw Form Data:', rawData);
+
+
   
       // Validate input using Zod
       const validatedFields = validateWithZodSchema(recordSchema, rawData);
@@ -192,7 +194,6 @@ export const updateProfileImageAction = async (
         boxId: boxId,
         locationId: locationId,
         ownerId: ownerId,
-        // userId: 1, // Add default userId as required by schema
         disposition: validatedFields.disposition,
         status: validatedFields.status,
         retention: retentionYears, // Ensure this is a number

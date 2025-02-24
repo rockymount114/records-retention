@@ -12,7 +12,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-// import OwnerInput from '@/components/form/OwnerInput';
 import { Toaster } from '@/components/ui/toaster';
 import { useToast } from '@/hooks/use-toast';
 import {
@@ -40,6 +39,7 @@ export default function AdminPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [isLoadingOwners, setIsLoadingOwners] = useState(true);
   const [owners, setOwners] = useState<Owner[]>([]);
+  const [activeMenu, setActiveMenu] = useState('owners');
   const [formData, setFormData] = useState({
     ownername: '',
     ownerlong: '',
@@ -167,151 +167,182 @@ export default function AdminPage() {
   };
 
   return (
-    <div className="container mx-auto py-8">
-      <h1 className="text-2xl font-bold mb-6">Add New Owner</h1>
-      <div className="bg-white p-6 rounded-lg shadow-md mb-8">
-        <form onSubmit={handleSubmit}>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="space-y-4">
-              <div>
-                <Label htmlFor="ownername">Owner Name</Label>
-                <Input
-                  id="ownername"
-                  name="ownername"
-                  value={formData.ownername}
-                  onChange={handleChange}
-                  placeholder="Enter Owner Name"
-                  className="mt-1"
-                  required
-                />
+    <div className="flex min-h-screen bg-gray-50">
+      {/* Sidebar */}
+      <div className="w-64 bg-white border-r border-gray-200 min-h-screen">
+        <div className="p-4 border-b">
+          <h2 className="text-xl font-bold">Admin Panel</h2>
+        </div>
+        <nav className="p-4">
+          <ul className="space-y-2">
+            <li>
+              <Button
+                variant={activeMenu === 'owners' ? 'default' : 'ghost'}
+                className="w-full justify-start"
+                onClick={() => setActiveMenu('owners')}
+              >
+                Owners Management
+              </Button>
+            </li>
+            {/* Add more menu items here as needed */}
+            <li>
+              <Button
+                variant={activeMenu === 'other' ? 'default' : 'ghost'}
+                className="w-full justify-start"
+                onClick={() => setActiveMenu('other')}
+              >
+                Other Menu Item
+              </Button>
+            </li>
+          </ul>
+        </nav>
+      </div>
+
+      {/* Main Content */}
+      <div className="flex-1 p-6 overflow-hidden flex flex-col h-screen">
+        {/* Add New Owner Form */}
+        <div className="bg-white p-6 rounded-lg shadow-md mb-6">
+          <h1 className="text-2xl font-bold mb-6">Add New Owner</h1>
+          <form onSubmit={handleSubmit}>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="space-y-4">
+                <div>
+                  <Label htmlFor="ownername">Owner Name</Label>
+                  <Input
+                    id="ownername"
+                    name="ownername"
+                    value={formData.ownername}
+                    onChange={handleChange}
+                    placeholder="Enter Owner Name"
+                    className="mt-1"
+                    required
+                  />
+                </div>
+                
+                <div>
+                  <Label htmlFor="ownerlong">Owner Name Long</Label>
+                  <Input
+                    id="ownerlong"
+                    name="ownerlong"
+                    value={formData.ownerlong}
+                    onChange={handleChange}
+                    placeholder="Enter Owner Name Long"
+                    className="mt-1"
+                    required
+                  />
+                </div>
               </div>
-              
-              <div>
-                <Label htmlFor="ownerlong">Owner Name Long</Label>
-                <Input
-                  id="ownerlong"
-                  name="ownerlong"
-                  value={formData.ownerlong}
-                  onChange={handleChange}
-                  placeholder="Enter Owner Name Long"
-                  className="mt-1"
-                  required
-                />
-              </div>
-              
-              <div>
-                <Label htmlFor="status">Status</Label>
-                <Select
-                  name="status"
-                  value={formData.status}
-                  onValueChange={(value) => handleSelectChange('status', value)}
-                >
-                  <SelectTrigger id="status">
-                    <SelectValue placeholder="Select status" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="Active">Active</SelectItem>
-                    <SelectItem value="Inactive">Inactive</SelectItem>
-                    <SelectItem value="Pending">Pending</SelectItem>
-                  </SelectContent>
-                </Select>
+
+              <div className="space-y-4">
+                <div>
+                  <Label htmlFor="status">Status</Label>
+                  <Select
+                    name="status"
+                    value={formData.status}
+                    onValueChange={(value) => handleSelectChange('status', value)}
+                  >
+                    <SelectTrigger id="status">
+                      <SelectValue placeholder="Select status" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="Active">Active</SelectItem>
+                      <SelectItem value="Inactive">Inactive</SelectItem>
+                      <SelectItem value="Pending">Pending</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                
+                <div>
+                  <Label htmlFor="contact">Contact</Label>
+                  <Input
+                    id="contact"
+                    name="contact"
+                    value={formData.contact}
+                    onChange={handleChange}
+                    placeholder="Enter contact information"
+                    className="mt-1"
+                    required
+                  />
+                </div>
               </div>
             </div>
 
-            <div className="space-y-4">
-              <div>
-                <Label htmlFor="contact">Contact</Label>
-                <Input
-                  id="contact"
-                  name="contact"
-                  value={formData.contact}
-                  onChange={handleChange}
-                  placeholder="Enter contact information"
-                  className="mt-1"
-                  required
-                />
-              </div>
-              
-             
+            <div className="mt-6 flex justify-end">
+              <Button
+                type="button"
+                variant="outline"
+                className="mr-2"
+                onClick={() => router.back()}
+                disabled={isLoading}
+              >
+                Cancel
+              </Button>
+              <Button type="submit" disabled={isLoading}>
+                {isLoading ? 'Saving...' : 'Save Owner'}
+              </Button>
             </div>
-          </div>
+          </form>
+        </div>
 
-          <div className="mt-6 flex justify-end">
-            <Button
-              type="button"
-              variant="outline"
-              className="mr-2"
-              onClick={() => router.back()}
-              disabled={isLoading}
-            >
-              Cancel
-            </Button>
-            <Button type="submit" disabled={isLoading}>
-              {isLoading ? 'Saving...' : 'Save Owner'}
-            </Button>
+        {/* Owners List with Scrollbar */}
+        <div className="bg-white rounded-lg shadow-md flex-1 flex flex-col overflow-hidden">
+          <h2 className="text-xl font-semibold p-4 border-b">Owners List</h2>
+          
+          <div className="overflow-y-auto flex-1">
+            {isLoadingOwners ? (
+              <div className="py-8 text-center text-gray-500">
+                Loading owners...
+              </div>
+            ) : owners && owners.length > 0 ? (
+              <div className="overflow-x-auto">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>ID</TableHead>
+                      <TableHead>Name</TableHead>
+                      <TableHead>Status</TableHead>
+                      <TableHead>Contact</TableHead>
+                      <TableHead>Created At</TableHead>
+                      <TableHead>Actions</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {owners.map((owner) => (
+                      <TableRow key={owner.id}>
+                        <TableCell>{owner.id}</TableCell>
+                        <TableCell>{`${owner.ownername} ${owner.ownerlong}`}</TableCell>
+                        <TableCell>
+                          <Badge className={getStatusColor(owner.status)}>
+                            {owner.status}
+                          </Badge>
+                        </TableCell>
+                        <TableCell>{owner.contact}</TableCell>
+                        <TableCell>
+                          {new Date(owner.createdAt).toLocaleDateString()}
+                        </TableCell>
+                        <TableCell>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => router.push(`/admin/owners/${owner.id}`)}
+                          >
+                            Edit
+                          </Button>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
+            ) : (
+              <div className="py-8 text-center text-gray-500">
+                No owners found. Create your first owner above.
+              </div>
+            )}
           </div>
-        </form>
+        </div>
       </div>
-
-      {/* Debug information */}
-      {/* <div className="mb-4 p-2 border rounded bg-gray-50">
-        <p>Owners array length: {owners?.length}</p>
-        <p>Loading owners: {isLoadingOwners ? 'Yes' : 'No'}</p>
-      </div> */}
-
-      <h2 className="text-xl font-semibold mb-4">Owners List</h2>
-      <div className="bg-white rounded-lg shadow-md overflow-hidden">
-        {isLoadingOwners ? (
-          <div className="py-8 text-center text-gray-500">
-            Loading owners...
-          </div>
-        ) : owners && owners.length > 0 ? (
-          <div className="overflow-x-auto">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>ID</TableHead>
-                  <TableHead>Name</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead>Contact</TableHead>
-                  <TableHead>Created At</TableHead>
-                  <TableHead>Actions</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {owners.map((owner) => (
-                  <TableRow key={owner.id}>
-                    <TableCell>{owner.id}</TableCell>
-                    <TableCell>{`${owner.ownername} ${owner.ownerlong}`}</TableCell>
-                    <TableCell>
-                      <Badge className={getStatusColor(owner.status)}>
-                        {owner.status}
-                      </Badge>
-                    </TableCell>
-                    <TableCell>{owner.contact}</TableCell>
-                    <TableCell>
-                      {new Date(owner.createdAt).toLocaleDateString()}
-                    </TableCell>
-                    <TableCell>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => router.push(`/admin/owners/${owner.id}`)}
-                      >
-                        Edit
-                      </Button>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </div>
-        ) : (
-          <div className="py-8 text-center text-gray-500">
-            No owners found. Create your first owner above.
-          </div>
-        )}
-      </div>
+      
       <Toaster />
     </div>
   );

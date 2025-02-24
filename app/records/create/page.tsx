@@ -27,24 +27,12 @@ async function CreateRecordPage() {
 
             <div className="grid md:grid-cols-2 gap-8 mb-4">
             <SiteInput/>
-
-            {/* <FormInput
-              name='box'
-              type='text'
-              label='Box'
-              defaultValue=''
-            /> */}
-
             <BoxInput/>
             <LocationInput/>
-
             <OwnersInput/>
-
             <DispositionInput/>
-
             <StatusInput/>
             <RetentionInput/>
-
             <ContentInput name='content' label='Content'/>            
 
             </div>
